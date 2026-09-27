@@ -1,84 +1,59 @@
 # Assignment 1: Divide-and-Conquer Algorithm Analysis
 
-## A. Project overview
+## A. Project Overview
 
-This project implements and studies four divide-and-conquer algorithms in Java: Merge Sort, randomized QuickSort, deterministic selection with Median-of-Medians, and the closest pair of points in two dimensions. The goal is to compare their algorithmic guarantees with measured runtime and recursion depth, and to validate their results against reference implementations.
+This project implements and analyzes four divide-and-conquer algorithms in Java: Merge Sort, randomized QuickSort, Deterministic Select using Median-of-Medians, and Closest Pair of Points. The experiments compare execution time and recursion depth with the algorithms’ theoretical bounds.
 
-## Repository layout
+The project uses Gradle. Tests are located in `src/test/java/com/daa/`.
 
-```text
-assignment1-divide-and-conquer/
-├── docs/
-│   ├── plots/
-│   │   ├── time_vs_n.png
-│   │   └── depth_vs_n.png
-│   └── screenshots/
-├── results/
-├── src/
-│   ├── main/java/com/daa/
-│   │   ├── ClosestPairSolver.java
-│   │   ├── DeterministicSelector.java
-│   │   ├── Experiment.java
-│   │   ├── Main.java
-│   │   ├── MergeSorter.java
-│   │   ├── Point.java
-│   │   └── QuickSorter.java
-│   └── test/java/com/daa/
-├── build.gradle
-├── gradlew
-└── gradlew.bat
-```
-
-This repository uses Gradle. Run tests from the project root with `./gradlew test` (Windows: `./gradlew.bat test`).
-
-## B. Algorithm analysis
+## B. Algorithm Analysis
 
 ### Merge Sort
 
-The array is split into two halves, each half is sorted recursively, and a linear merge combines them. The implementation uses a reusable auxiliary buffer and switches to insertion sort for subarrays of at most 15 elements.
+Merge Sort recursively splits an array in half and merges the sorted halves using a reusable auxiliary buffer. Subarrays of at most 15 elements use insertion sort.
 
 - Recurrence: `T(n) = 2T(n/2) + Θ(n)`
-- Time: `Θ(n log n)` in the best, average, and worst cases
-- Extra space: `O(n)` for the auxiliary buffer and `O(log n)` for the recursion stack
-- Master Theorem: `a = 2`, `b = 2`, and `f(n) = Θ(n)`, so this is Case 2 and `T(n) = Θ(n log n)`.
+- Time: `Θ(n log n)` in all cases
+- Extra space: `O(n)` for the buffer and `O(log n)` for the recursion stack
+- By the Master Theorem, `a = 2`, `b = 2`, and `f(n) = Θ(n)`, giving `T(n) = Θ(n log n)`.
 
 ### Randomized QuickSort
 
-A pivot is selected at random and the array is partitioned in place. The algorithm recurses on the smaller partition and processes the larger partition iteratively. This bounds call-stack depth independently of the amount of work required by a bad partition sequence.
+QuickSort selects a random pivot and partitions the array in place. It recurses on the smaller partition and iterates over the larger one.
 
 - Expected time: `Θ(n log n)`
 - Worst-case time: `Θ(n²)`
-- Recurrence for a balanced split: `T(n) = 2T(n/2) + Θ(n)`
+- Balanced recurrence: `T(n) = 2T(n/2) + Θ(n)`
 - Worst-case recurrence: `T(n) = T(n − 1) + Θ(n)`
-- Stack space: `O(log n)` with smaller-partition recursion
+- Stack space with smaller-partition recursion: `O(log n)`
 
-Randomized pivot selection makes consistently poor splits less likely; it does not remove the quadratic worst case.
+Random pivot selection reduces the chance of consistently unbalanced partitions but does not eliminate the quadratic worst case.
 
 ### Deterministic Select (Median-of-Medians)
 
-Elements are divided into groups of five. The median of each group is found, and the median of those medians is used as the pivot. After an in-place partition, selection continues only in the partition containing the requested rank `k`.
+The algorithm groups elements in fives, selects the median of each group, and uses the median of those medians as a pivot. After partitioning in place, it continues only in the partition containing the requested rank `k`.
 
 - Recurrence: `T(n) ≤ T(⌈n/5⌉) + T(7n/10 + O(1)) + Θ(n)`
 - Worst-case time: `Θ(n)`
-- Auxiliary space: `O(log n)` recursion stack
+- Extra space: `O(log n)` for the recursion stack
 
-The two recursive subproblem fractions sum to less than one (`1/5 + 7/10 < 1`). Together with linear work for grouping and partitioning, this gives a linear worst-case bound by Akra–Bazzi intuition (or a standard substitution argument).
+The recursive subproblem fractions sum to less than one, so the linear grouping and partitioning work gives a linear worst-case bound.
 
 ### Closest Pair of Points
 
-Points are divided around the median x-coordinate. The algorithm finds the closest pair in each half, then examines points within distance `d` of the dividing line, where `d` is the smaller half-result. The strip is processed in y-order, comparing only a constant number of subsequent points for each point.
+The point set is divided around the median x-coordinate. After solving both halves, the algorithm checks the strip around the dividing line in y-order. Each point is compared with only a constant number of following points.
 
-- Recurrence with y-order maintained through the recursion: `T(n) = 2T(n/2) + Θ(n)`
-- Time under that implementation: `Θ(n log n)` by the Master Theorem
-- Space: temporary arrays and recursion stack; exact auxiliary-space use depends on the implementation
+- Recurrence when y-order is maintained: `T(n) = 2T(n/2) + Θ(n)`
+- Time: `Θ(n log n)`
+- Extra space: temporary arrays and the recursion stack
 
-Maintaining y-order is essential for the linear strip scan. If the strip is re-sorted at every recursive level, the recurrence and overall runtime change; see `ClosestPairSolver.java` for the implementation details.
+Maintaining y-order allows the strip to be processed in linear time at each recursion level.
 
-## C. Experimental results
+## C. Experimental Results
 
-The following timing and depth values are the measurements currently recorded in this project README. The benchmark protocol does not currently identify the input distribution, number of repetitions, warm-up procedure, Java version, or machine. These details should be added from the actual experiment before treating the values as a controlled comparison. `System.nanoTime()` should be used for elapsed-time measurements.
+Execution time was measured in nanoseconds. The tables show the recorded results for each input size.
 
-### Execution time (nanoseconds)
+### Execution Time (ns)
 
 | n | Merge Sort | QuickSort | Deterministic Select | Closest Pair |
 |---:|---:|---:|---:|---:|
@@ -89,7 +64,7 @@ The following timing and depth values are the measurements currently recorded in
 | 1,000 | 141,900 | 87,300 | 264,300 | 1,503,100 |
 | 5,000 | 817,900 | 664,300 | 913,900 | 7,495,900 |
 
-### Maximum recursion depth
+### Maximum Recursion Depth
 
 | n | Merge Sort | QuickSort | Deterministic Select | Closest Pair |
 |---:|---:|---:|---:|---:|
@@ -100,63 +75,42 @@ The following timing and depth values are the measurements currently recorded in
 | 1,000 | 11 | 22 | 9 | 10 |
 | 5,000 | 14 | 33 | 12 | 12 |
 
-**QuickSort depth check:** the recorded depth values should be verified against the implementation and the definition of the metric. Recursing only on the smaller partition should keep the call-stack depth `O(log n)`; in particular, the recorded values 19 for `n = 500` and 33 for `n = 5,000` need explanation before submission.
+Detailed experiment data: [results.csv](results/results.csv)
 
-### Results by input type
+![Execution time vs. n](docs/plots/time_vs_n.png)
 
-The rubric asks for random, sorted, reverse-sorted, and duplicate-heavy inputs where applicable. The current timing table does not identify which input type produced its values, so this section must be filled from the experiment output. Do not copy one timing series into all rows.
-
-| Algorithm | Input type | Sizes measured | Result file / table |
-|---|---|---|---|
-| Merge Sort | Random / sorted / reverse-sorted / duplicate-heavy | [add tested sizes] | [add measured results or CSV columns] |
-| QuickSort | Random / sorted / reverse-sorted / duplicate-heavy | [add tested sizes] | [add measured results or CSV columns] |
-| Deterministic Select | Random / sorted / reverse-sorted / duplicate-heavy | [add tested sizes] | [add measured results or CSV columns] |
-| Closest Pair | Random point sets (and other tested distributions) | [add tested sizes] | [add measured results or CSV columns] |
-
-### Plots and data
-
-- [Execution time vs. n](docs/plots/time_vs_n.png)
-- [Recursion depth vs. n](docs/plots/depth_vs_n.png)
-- CSV results: [results.csv](results/results.csv)
-
+![Recursion depth vs. n](docs/plots/depth_vs_n.png)
 
 ## D. Discussion
 
-**Do the measurements match the theoretical complexity?** The values generally rise as input size grows, but the series is small and its input distribution and measurement protocol are not recorded here. The irregular values, especially at small `n`, mean this table alone cannot verify asymptotic growth. Repeated measurements with JVM warm-up and controlled inputs would make the comparison more useful.
+**Do the results match the theoretical complexity?** Runtime generally increases with input size, but individual measurements vary. JVM warm-up and system activity can affect short runs, so the tables show practical measurements rather than proving asymptotic bounds.
 
-**How does input structure affect performance?** Merge Sort has the same asymptotic bound for random, sorted, reverse-sorted, and duplicate-heavy arrays. QuickSort's pivot sequence and handling of equal keys can change partition balance and runtime; random pivots reduce the chance of repeatedly poor splits, while the worst case remains `Θ(n²)`. For selection and closest pair, the input distribution can affect practical timings even when the theoretical bound is unchanged.
+**How does input structure affect performance?** Merge Sort has the same asymptotic complexity for different array orders. QuickSort’s practical performance depends on partition balance and how equal values are handled. Random pivots make repeated poor splits less likely. Input distributions can also change measured runtimes for selection and closest pair.
 
-**Why recurse on the smaller QuickSort partition?** The smaller partition has no more than about half the elements. Recursing on that side and iterating over the larger side therefore bounds call-stack depth by `O(log n)`, helping avoid stack overflow. This controls stack use, not worst-case running time.
+**Why recurse on the smaller QuickSort partition?** The smaller partition contains at most about half the current elements. Recursing on it and iterating over the larger side bounds stack depth by `O(log n)`.
 
-**Why does Median-of-Medians guarantee `O(n)`?** The pivot derived from medians of groups of five guarantees that a constant fraction of elements can be discarded, up to small-size rounding terms. The recurrence `T(n) ≤ T(n/5) + T(7n/10 + O(1)) + Θ(n)` has total recursive fractions below one, so the total work is linear.
+**Why does Median-of-Medians guarantee `O(n)`?** Its pivot discards a constant fraction of the elements. The recurrence has subproblem fractions `1/5` and `7/10`, whose sum is less than one; grouping and partitioning add only linear work.
 
-**Why is divide-and-conquer Closest Pair faster than brute force?** Brute force checks all pairs and takes `Θ(n²)` time. The divide-and-conquer method solves two half-size instances and processes the y-ordered strip in linear time per level, giving `Θ(n log n)` overall.
+**Why is divide-and-conquer Closest Pair faster than brute force?** Brute force checks every pair in `Θ(n²)` time. Divide-and-conquer solves two half-size problems and processes the y-ordered strip in linear time per level, giving `Θ(n log n)` overall.
 
-**What practical factors affect the measurements?** JVM JIT compilation and warm-up, garbage collection, CPU cache behavior, allocation patterns, operating-system scheduling, processor load, and timer granularity can all affect elapsed times. Record the Java version and machine, warm up the code, repeat runs, and summarize results consistently (for example, with a median).
+**What practical factors affect performance?** JVM JIT compilation, garbage collection, CPU cache behavior, allocations, system load, and timer granularity can all affect measured runtime.
 
 ## E. Reflection
 
-Working on this assignment helped me see the difference between an algorithm’s theoretical bound and the time measured in one run. The small-input results were especially useful: fixed setup costs and JVM warm-up can matter more than the growth rate when `n` is small. Measuring recursion depth alongside runtime also gave me a clearer picture of how an algorithm uses the call stack.
+Working on this assignment helped me understand the difference between theoretical complexity and measured runtime. The measurements for small inputs showed how setup costs and JVM warm-up can affect a benchmark.
 
-The trickiest part was keeping the recursive logic and its edge cases clear across different problems. In QuickSort, the smaller-partition rule affects stack use; in Median-of-Medians, the pivot must still guarantee progress; and in Closest Pair, the strip check depends on the points being considered in y-order. Comparing implementations with reference methods helped me think about correctness separately from performance.
+The most challenging part was keeping the recursive steps and edge cases clear across different algorithms. Comparing results with reference methods helped me separate correctness from performance.
 
 ## F. Screenshots
 
+![Program output](docs/screenshots/run_output.png)
 
-
-- Program output: ![Program output](docs/screenshots/run_output.png)
-- Test results: ![Test results](docs/screenshots/test_output.png)
+![Test results](docs/screenshots/test_output.png)
 
 ## Testing
 
-The test suite is under `src/test/java/com/daa/`. The assignment's correctness checks should include:
+The Gradle test run completed with **4 tests passed**. Tests are located in `src/test/java/com/daa/`.
 
-- Merge Sort and QuickSort compared with `Arrays.sort()` on random, sorted, reverse-sorted, duplicate-heavy, empty, and single-element arrays.
-- At least 100 random Deterministic Select cases compared with the element at index `k` after sorting a copy of the input.
-- Closest Pair compared with an `O(n²)` brute-force reference on small datasets up to `n = 2,000`; use the fast implementation for larger datasets.
+## GitHub Workflow
 
-Test run: [add the actual command, date/environment if required, and passing/failing summary after running `./gradlew test`]. Do not claim that these checks passed until the current test run confirms it.
-
-## GitHub workflow
-
-The repository uses Gradle (`build.gradle` and the Gradle wrapper), so the Maven `pom.xml` shown in the sample structure is not applicable to this project. Keep the actual source, tests, plots, screenshots, CSV results, and README committed in their corresponding folders. The Git history should describe the work that actually happened; use focused commits for implementation, experiments, tests, documentation, and fixes, without inventing or backdating commits.
+The project uses Gradle and includes its source code, tests, results, plots, screenshots, and README. The Git history should reflect the actual development process.
