@@ -145,7 +145,7 @@ The rubric asks for random, sorted, reverse-sorted, and duplicate-heavy inputs w
 Add readable screenshots to `docs/screenshots/` and link the actual files below. Include a program-output screenshot, a test-results screenshot, and screenshots of the plots/results.
 
 - Program output: ![Program output](docs/screenshots/run_output.png)
-- Test results: ![Test results](docs/screenshots/test-results.png)
+- Test results: ![Test results](docs/screenshots/test_output.png)
 
 ## Testing
 
