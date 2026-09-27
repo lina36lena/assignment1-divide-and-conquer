@@ -146,7 +146,6 @@ Add readable screenshots to `docs/screenshots/` and link the actual files below.
 
 - Program output: ![Program output](docs/screenshots/run_output.png)
 - Test results: ![Test results](docs/screenshots/test-results.png)
-- Plots/results: ![Plots and results](docs/screenshots/plots.png)
 
 ## Testing
 
