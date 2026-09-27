@@ -136,13 +136,13 @@ The rubric asks for random, sorted, reverse-sorted, and duplicate-heavy inputs w
 
 ## E. Reflection
 
-[Replace this paragraph with your own reflection.] Describe one concept you understand better after the assignment and one concrete implementation decision you found challenging. For example, explain how you handled the closest-pair strip ordering, tracked QuickSort stack depth, or tested selection around duplicate values—only use details that match your own work.
+Working on this assignment helped me see the difference between an algorithm’s theoretical bound and the time measured in one run. The small-input results were especially useful: fixed setup costs and JVM warm-up can matter more than the growth rate when `n` is small. Measuring recursion depth alongside runtime also gave me a clearer picture of how an algorithm uses the call stack.
 
-[Add a second paragraph if useful.] Explain what you would change in your implementation or experiment if you had more time. Keep the reflection in your own words so it represents your experience rather than a generic algorithm summary.
+The trickiest part was keeping the recursive logic and its edge cases clear across different problems. In QuickSort, the smaller-partition rule affects stack use; in Median-of-Medians, the pivot must still guarantee progress; and in Closest Pair, the strip check depends on the points being considered in y-order. Comparing implementations with reference methods helped me think about correctness separately from performance.
 
 ## F. Screenshots
 
-Add readable screenshots to `docs/screenshots/` and link the actual files below. Include a program-output screenshot, a test-results screenshot, and screenshots of the plots/results.
+
 
 - Program output: ![Program output](docs/screenshots/run_output.png)
 - Test results: ![Test results](docs/screenshots/test_output.png)
