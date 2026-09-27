@@ -53,16 +53,14 @@ Maintaining y-order allows the strip to be processed in linear time at each recu
 
 Execution time was measured in nanoseconds. The tables show the recorded results for each input size.
 
-### Execution Time (ns)
-
 | n | Merge Sort | QuickSort | Deterministic Select | Closest Pair |
 |---:|---:|---:|---:|---:|
-| 10 | 246,000 | 268,900 | 1,166,900 | 3,136,700 |
-| 50 | 17,500 | 14,800 | 32,700 | 164,900 |
-| 100 | 38,300 | 80,700 | 114,000 | 263,200 |
-| 500 | 173,800 | 172,600 | 246,600 | 1,522,300 |
-| 1,000 | 141,900 | 87,300 | 264,300 | 1,503,100 |
-| 5,000 | 817,900 | 664,300 | 913,900 | 7,495,900 |
+| 10 | 1,663,200 | 1,737,400 | 4,651,000 | 10,841,500 |
+| 50 | 37,500 | 20,100 | 46,300 | 243,100 |
+| 100 | 51,900 | 48,900 | 184,700 | 313,800 |
+| 500 | 305,700 | 271,400 | 405,500 | 1,608,800 |
+| 1,000 | 142,100 | 123,600 | 293,800 | 2,314,900 |
+| 5,000 | 874,700 | 675,600 | 1,632,700 | 8,589,900 |
 
 ### Maximum Recursion Depth
 
